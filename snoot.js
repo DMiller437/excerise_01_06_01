@@ -45,6 +45,10 @@ function updateDays() {
     var dates = deliveryDay.getElementsByTagName("option");
     var deliveryMonth = document.getElementById("delivMo");
     var deliveryYear = document.getElementById("delivYr");
+//    cover for no month selected
+    if(deliveryMonth.selectedIndex === -1) {
+        return;
+    }
     var selectedMonth = deliveryMonth.options[deliveryMonth.selectedIndex].value;
     while(dates[28]) {
         deliveryDay.removeChild(dates[28]);
@@ -153,6 +157,90 @@ function validateAddress(fieldsetId) {
     }
 }
 
+//function to validate delivery date
+function validateDeliveryDate() {
+    var selectElements = document.querySelectorAll("#deliveryDate" + " select");
+    var errorDiv = document.querySelectorAll("#deliveryDate" + " .errorMessage")[0];
+    var fieldsetValidity = true;
+    var elementCount = selectElements.length;
+    var currentElement;
+    try {
+// loop through the select fields looking for blanks
+        for(var i = 0; i < elementCount; i++) {
+            currentElement = selectElements[i];
+            //blanks
+            if(currentElement.selectedIndex === -1) {
+//                debugger;
+                currentElement.style.border = "1px solid red";
+                fieldsetValidity = false;
+            }
+            //not blanks
+            else{
+                currentElement.style.background = "white";
+            }
+            
+        }
+        // action for invalid field set
+        if(fieldsetValidity === false) {
+          throw"Please specify a Delivery Date."
+        }
+            else{
+              errorDiv.style.display = "none";
+              errorDiv.innerHTML = "";  
+            }
+    }
+   catch(msg) {
+        errorDiv.style.display = "block";
+        errorDiv.innerHTML = msg;
+        formValidity = false;
+    }
+}
+
+//function to validate payment
+function validatePayment() {
+    var errorDiv = document.querySelectorAll("#deliveryDate" + " .errorMessage")[0];
+    var fieldsetValidity = true;
+    var ccNumElement = document.getElementById("ccNum");
+    var selectElements = 
+    document.querySelectorAll("#paymentInfo" + "select")
+    var elementCount = selectElements.length;
+    var cvvElement = document.getElementById("cvv");
+    var cards = document.getElementsByName("PaymentType");
+    var currentElement;
+    try {
+// loop through the select fields looking for blanks
+        for(var i = 0; i < elementCount; i++) {
+            currentElement = selectElements[i];
+            //blanks
+            if(currentElement.selectedIndex === -1) {
+//                debugger;
+                currentElement.style.border = "1px solid red";
+                fieldsetValidity = false;
+            }
+            //not blanks
+            else{
+                currentElement.style.background = "white";
+            }
+            
+        }
+        // action for invalid field set
+        if(fieldsetValidity === false) {
+          throw"Please specify a Delivery Date."
+        }
+            else{
+              errorDiv.style.display = "none";
+              errorDiv.innerHTML = "";  
+            }
+    }
+   catch(msg) {
+        errorDiv.style.display = "block";
+        errorDiv.innerHTML = msg;
+        formValidity = false;
+    }
+}
+
+
+
 //function to validate entire form
 function validateForm(evt) {
 //    prevent form default behavior submit
@@ -166,6 +254,7 @@ function validateForm(evt) {
     
     validateAddress("billingAddress");
     validateAddress("deliveryAddress");
+    validateDeliveryDate();
     
     if (formValidity === true) { //form is valid
         document.getElementById("errorText").innerHTML = "";
